@@ -1,0 +1,16 @@
+Programeer punten:
+-	Toevoegen van de selectiebox (zie YouTube (later bekijken))
+-	Het selecteerdbaar maken van objecten in de wereld (gebaseerd op de zichtbare objecten die onder de selectiebox zitten)
+-	Onderscheid maken van selecteerbare stationair en dynamische objecten
+-	Coordinaten voor het lanceren van raketten bepalen
+-	Algoritme voor raketflightpath
+-	Raketairodynamica
+
+Modeleren:
+-	Stations:
+	-	Electra
+	-	Munitie
+	-	Brandstoffen
+	-	Explosieven
+-	Raketten frames
+
