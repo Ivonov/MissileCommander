@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class PlayerCameraControler : MonoBehaviour {
+    #region **** Camara movement en rotation varaibles ****
     public float cameraSpeed = 1.5f;
     public float traveldistance = 1f;
     public float rotateSensitivityX = 100f;
@@ -19,9 +20,15 @@ public class PlayerCameraControler : MonoBehaviour {
     public Texture2D cursorTexture; 
     public CursorMode cursorMode = CursorMode.Auto; 
     private Vector2 cursorSpot = Vector2.zero;
+    #endregion
 
+    #region **** Selection and selectionbox variables ****
+    public Texture2D selectionHighlight = null;
+    public static Rect selection = new Rect(0,0,0,0);
+    private Vector3 startClick = -Vector3.one;
+    #endregion
 
-	/// <summary>
+    /// <summary>
     /// Use this for initialization
 	/// </summary>
 	void Start () {
@@ -37,6 +44,7 @@ public class PlayerCameraControler : MonoBehaviour {
         checkUserInput();
 	}
 
+    #region **** Keyboard and mouse listeners ****
     /// <summary>
     /// This method checks what input has been given in this frame.
     /// </summary>
@@ -57,26 +65,48 @@ public class PlayerCameraControler : MonoBehaviour {
             setTargetPosition("D");
             moveCamera();
         }
-        if(Input.GetMouseButton(2)){ //Middle mouse click
+        if (Input.GetMouseButton(2)) { //Middle mouse click
             rotateCamera();
         }
 
-        if(Input.GetMouseButton(0)){
-            Debug.Log("Dylan is gay");
-            tryToSelectGameObject(getGameComponentFromPixelPosition());
+        // Mouseclick is only for the selection of objects
+        if (Input.GetMouseButtonDown(0)) {
+            Debug.Log("Mouse clicked!");
+            startClick = Input.mousePosition;
+        } else if (Input.GetMouseButtonUp(0)) {
+            if (selection.width < 0) { 
+                selection.x += selection.width;
+                selection.width = -selection.width;
+            }
+            if (selection.height < 0) {
+                selection.y += selection.height;
+                selection.height = -selection.height;
+            }
+
+            startClick = -Vector3.one;
+        }
+        if (Input.GetMouseButton(0)) { 
+            selection = new Rect(   startClick.x, 
+                                    invertMouseY(startClick.y), 
+                                    Input.mousePosition.x - startClick.x,
+                                    invertMouseY(Input.mousePosition.y) - invertMouseY(startClick.y));
         }
         zoomCamera();
     }
+    #endregion
 
-    private void tryToSelectGameObject(Vector3 position) { 
-        
-    }
+    #region **** Selection with Selectionbox ****
+    /// <summary>
+    /// Returns the correct height value to draw a Rect object.
+    /// It inverts the value of the height
+    /// </summary>
+    /// <param name="y"></param>
+    /// <returns></returns>
+    public static float invertMouseY(float y) { return Screen.height - y; }
 
-    private Vector3 getGameComponentFromPixelPosition() {
-        Vector3 tempVector = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        return tempVector;
-    }
+    #endregion
 
+    #region **** Camera movement and rotation ****
     /// <summary>
     /// Every frame the scroll gets checked and is translated in the zoom motion
     /// </summary>
@@ -136,4 +166,5 @@ public class PlayerCameraControler : MonoBehaviour {
                 break;
         }
     }
+    #endregion
 }
